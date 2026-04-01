@@ -31,10 +31,24 @@ def get_detailed_instruct(task_description: str, query: str) -> str:
     return f'Instruct: {task_description}\nQuery:{query}'
 
 
-def embed_chunks(chunks: List[Document], model_path: str = "Qwen/Qwen3-Embedding-0.6B", batch_size: int = 8):
+def embed_chunks(chunks: List[Document], model_path: str = None, batch_size: int = 8):
 
-    tokenizer = AutoTokenizer.from_pretrained(model_path, padding_side='left')
-    model = AutoModel.from_pretrained(model_path)
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+    if model_path is None:
+        model_path = os.path.join(base_dir, "models", "Qwen", "Qwen3-Embedding-0.6B")
+
+    print(f"Loading model from: {model_path}")
+
+    try:
+        tokenizer = AutoTokenizer.from_pretrained(model_path, padding_side='left')
+        model = AutoModel.from_pretrained(model_path)
+    except Exception as e:
+        print(f"加载模型失败: {e}")
+        return None
+    
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
     model.eval()
 
     task = 'Represent the document for retrieval: '
@@ -61,7 +75,11 @@ def embed_chunks(chunks: List[Document], model_path: str = "Qwen/Qwen3-Embedding
             all_embeddings.append(embeddings.cpu().numpy())
     all_embeddings = np.concatenate(all_embeddings, axis=0)
     
+    if device.type == 'cuda':
+        torch.cuda.empty_cache()
+
     return all_embeddings
+
 
 
 def load_chunks_from_json(input_file: str) -> List[Document]:
