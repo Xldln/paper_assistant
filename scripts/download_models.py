@@ -11,7 +11,7 @@ def download_model(model_name):
     return model
 
 
-def verify_dl_model():
+def verify_dl_model(model_cache_dir):
     print("\nVerifying downloaded models...")
     models = [
         "Qwen/Qwen3-Embedding-0.6B",
@@ -19,7 +19,7 @@ def verify_dl_model():
         "Qwen/Qwen3-Embedding-8B"
     ]
     for model_name in models:
-        model_path = os.path.join(MODEL_CACHE_DIR, f"models--{model_name.replace('/', '--')}")
+        model_path = os.path.join(model_cache_dir, f"models--{model_name.replace('/', '--')}")
         if os.path.exists(model_path):
             print(f"✓ {model_name} - Downloaded at {model_path}")
         else:
@@ -27,8 +27,6 @@ def verify_dl_model():
 
 
 def main():
-
-    os.environ['HF_ENDPOINT'] = "https://hf-mirror.com"
 
     # 设置模型下载目录
     MODEL_CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../models")
@@ -43,7 +41,7 @@ def main():
     download_model("Qwen/Qwen3-Embedding-4B")
     download_model("Qwen/Qwen3-Embedding-8B")
 
-    verify_dl_model()
+    verify_dl_model(MODEL_CACHE_DIR)
 
 
 if __name__ == "__main__":

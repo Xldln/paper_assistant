@@ -11,7 +11,7 @@ conda activate paper_assisant
 ### Install requirements
 
 ```
-pip install transformers>=4.51.0 sentence-transformers>=2.7.0
+pip install transformers sentence-transformers
 pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu128
 pip install langchain-text-splitters langchain-community langchain-core
 ```
