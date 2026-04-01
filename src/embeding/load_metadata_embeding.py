@@ -41,8 +41,9 @@ def embed_chunks(chunks: List[Document], model_path: str = None, batch_size: int
     print(f"Loading model from: {model_path}")
 
     try:
-        tokenizer = AutoTokenizer.from_pretrained(model_path, padding_side='left')
-        model = AutoModel.from_pretrained(model_path)
+        tokenizer = AutoTokenizer.from_pretrained(model_path, padding_side='left',local_files_only=True)
+        model = AutoModel.from_pretrained(model_path,
+                                        local_files_only=True)
     except Exception as e:
         print(f"加载模型失败: {e}")
         return None
@@ -106,7 +107,7 @@ def main():
     chunks = load_chunks_from_json(chunks_json_path)
     print(f"Loaded {len(chunks)} chunks")
     embeddings = embed_chunks(chunks)
-    print(f"Generated embeddings with shape: {embeddings.shape}")
+    #print(f"Generated embeddings with shape: {embeddings.shape}")
     emb_file_name = os.path.basename(chunks_json_path).replace("_processed_chunks.json", "_embeddings.npy")
     np.save(emb_file_name, embeddings)
     

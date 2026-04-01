@@ -13,7 +13,7 @@ conda activate paper_assisant
 ```
 pip install transformers sentence-transformers
 pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu128
-pip install langchain-text-splitters langchain-community langchain-core
+pip install langchain-text-splitters langchain-community langchain-core pypdf
 ```
 
 ### Download Qwen3-Embeding models 
