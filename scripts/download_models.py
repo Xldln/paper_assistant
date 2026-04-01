@@ -1,28 +1,49 @@
 from sentence_transformers import SentenceTransformer
 import os
 
-# os.environ['TRANSFORMERS_OFFLINE'] = '1'
-# os.environ['HF_DATASETS_OFFLINE'] = '1'
-# os.environ['HF_HUB_OFFLINE'] = '1'
+
 
 
 def download_model(model_name):
-
-    SentenceTransformer(model_name)
+    print(f"Downloading {model_name}...")
+    model = SentenceTransformer(model_name)
+    print(f"Downloaded {model_name} successfully!")
+    return model
 
 
 def verify_dl_model():
-    
+    print("\nVerifying downloaded models...")
+    models = [
+        "Qwen/Qwen3-Embedding-0.6B",
+        "Qwen/Qwen3-Embedding-4B",
+        "Qwen/Qwen3-Embedding-8B"
+    ]
+    for model_name in models:
+        model_path = os.path.join(MODEL_CACHE_DIR, f"models--{model_name.replace('/', '--')}")
+        if os.path.exists(model_path):
+            print(f"✓ {model_name} - Downloaded at {model_path}")
+        else:
+            print(f"✗ {model_name} - Not found")
 
 
 def main():
 
+    os.environ['HF_ENDPOINT'] = "https://hf-mirror.com"
+
+    # 设置模型下载目录
+    MODEL_CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../models")
+    os.environ['HF_HOME'] = MODEL_CACHE_DIR
+    os.environ['TRANSFORMERS_CACHE'] = MODEL_CACHE_DIR
+    os.environ['HF_HUB_CACHE'] = MODEL_CACHE_DIR
+    os.environ['SENTENCE_TRANSFORMERS_HOME'] = MODEL_CACHE_DIR
+
+    os.makedirs(MODEL_CACHE_DIR, exist_ok=True)
+
     download_model("Qwen/Qwen3-Embedding-0.6B")
-    download_model("Qwen/Qwen3-Embedding-0.6B")
-    download_model("Qwen/Qwen3-Embedding-0.6B")
+    download_model("Qwen/Qwen3-Embedding-4B")
+    download_model("Qwen/Qwen3-Embedding-8B")
 
     verify_dl_model()
-
 
 
 if __name__ == "__main__":
